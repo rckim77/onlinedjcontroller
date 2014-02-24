@@ -14,7 +14,6 @@
         source.loop= true;
         source.connect(gainNode);
         gainNode.connect(context.destination);
-        gainNode.gain.value = 0.1;
         //source.start(0); // Play sound immediately
     };
 
@@ -93,7 +92,11 @@
       min: 0,
       max: 100,
       value: 50,
-      
+      slide: function(e, ui) {
+        var slider_val = ui.value;
+        volume = slider_val / 100;
+        gainNode2.gain.value = volume;
+      },
     });
   });
 
@@ -117,9 +120,13 @@
       min: 0,
       max: 100,
       value: 50,
-      
+      slide: function(e, ui) {
+        var slider_val = ui.value;
+        volume = slider_val / 100;
+        gainNode.gain.value = volume;
+      },
+      })
     });
-  });
 
   // below is code for spinning jog wheels
 
