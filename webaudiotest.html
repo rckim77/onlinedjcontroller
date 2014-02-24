@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Mixtrack Online</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="custom.css">
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script type="text/javascript" src="http://jqueryrotate.googlecode.com/svn/trunk/jQueryRotate.js"></script>
+  <script src="./audio.js"></script>
+  </head>
+  <body>
+    <!--<input type="button" onClick="play();" value="Play Track 1">
+    <input type="button" onClick="source.noteOff(0);" value="Stop Track 1">
+    <input type="button" onClick="speedUp();" value="Speed Up">
+    <input type="button" onClick="play2();" value="Play Track 2">
+    <input type="button" onClick="source2.stop(0)" value="Stop Track 2"> -->
+    <h1>Mixtrack Online</h1>
+
+     <div id= "container">
+        <img src="images/mixtrackpro2.jpg" id="background_img"> 
+        <img src="images/mixtrackwheelleft.png" id="leftwheel">
+        <button type="button" id="play1button" onClick="play();">PLAY</button>
+        <button type="button" id="play1buttonstop" onClick="source.noteOff(0);">STOP</button>
+
+        <img src="images/mixtrackwheelright.png" id="rightwheel">
+        <button type="button" id="play2button" onClick="play2();">PLAY</button>
+        <button type="button" id="play2buttonstop" onClick="source2.stop(0);">STOP</button>
+
+        <div id="slider-vertical1"></div>
+        <div id="gainsliderright"></div>
+        <div id="slider-vertical2"></div>
+        <div id="gainsliderleft"></div>
+     </div>
+  </body>
+</html>

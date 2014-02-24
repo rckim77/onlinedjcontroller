@@ -1,0 +1,97 @@
+/* custom.css
+
+Raymond Kim
+
+*/
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+ .ui-slider {
+ position:absolute;
+ background: transparent;
+ height: 105px;
+ border: none;
+} 
+
+.ui-slider .ui-slider-range {
+  display: none;
+}
+
+.ui-slider-vertical .ui-slider-handle{
+    width: 55px; 
+    height: 26px; 
+    background: url(images/mixtrackslidergeneric.png) no-repeat; overflow: hidden; 
+    position:absolute;
+    border-style:none; 
+}
+
+#background_img {
+  position: absolute;
+}
+
+#container {
+  position: relative;
+  left: 15%;
+  top: 15%;
+}
+
+#gainsliderleft {
+  top: 458px;
+  left: 475px;
+}
+
+#gainsliderright {
+  top: 458px;
+  left: 633px;
+}
+
+  #leftwheel {
+  position: absolute;
+  top: 282px;
+  left: 73px;
+  }
+  
+  #play1button {
+  position: absolute;
+  top: 620px;
+  left: 255px;
+  }
+
+  #play1buttonstop {
+    position: absolute;
+    top: 620px;
+    left: 255px;
+  }
+  
+  #rightwheel {
+  position: absolute;
+  top: 282px;
+  left: 754px;
+  }
+  
+  #play2button {
+  position: absolute;
+  top: 620px;
+  left: 933px;
+  }
+
+  #play2buttonstop {
+    position: absolute;
+    top: 620px;
+    left: 933px;
+  }
+
+  #slider-vertical1 {
+    top: 137px;
+    left: 1063px;
+  }
+
+  #slider-vertical2 {
+    top: 137px;
+    left: 50px;
+  }

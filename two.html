@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+</head>
+
+<body>
+<style>
+body {
+  font-family: "Droid Sans", Arial, sans-serif;
+  padding: 2em;
+}
+button {
+  vertical-align: middle;
+  background: -webkit-gradient(linear, 0% 40%, 0% 70%, from(#F9F9F9), to(#E3E3E3));
+  background: -webkit-linear-gradient(#F9F9F9 40%, #E3E3E3 70%);
+  background: -moz-linear-gradient(#F9F9F9 40%, #E3E3E3 70%);
+  background: -ms-linear-gradient(#F9F9F9 40%, #E3E3E3 70%);
+  background: -o-linear-gradient(#F9F9F9 40%, #E3E3E3 70%);
+  background: linear-gradient(#F9F9F9 40%, #E3E3E3 70%);
+  border: 1px solid #999;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+button:not(:disabled):hover {
+  border-color: black;
+}
+button:not(:disabled):active {
+  background: -webkit-gradient(linear, 0% 40%, 0% 70%, from(#E3E3E3), to(#F9F9F9));
+  background: -webkit-linear-gradient(#E3E3E3 40%, #F9F9F9 70%);
+  background: -moz-linear-gradient(#E3E3E3 40%, #F9F9F9 70%);
+  background: -ms-linear-gradient(#E3E3E3 40%, #F9F9F9 70%);
+  background: -o-linear-gradient(#E3E3E3 40%, #F9F9F9 70%);
+  background: linear-gradient(#E3E3E3 40%, #F9F9F9 70%);
+}
+.button {
+  height: 30px;
+  width: 120px;
+  vertical-align: middle;
+}
+.button::-webkit-file-upload-button,
+.button::-moz-file-upload-button {
+  visibility: hidden;
+}
+.button:before {
+  content: 'Load audio file';
+  display: inline-block;
+  background: -webkit-gradient(linear, 0% 40%, 0% 70%, from(#F9F9F9), to(#E3E3E3));
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+.button:hover:before {
+  border-color: black;
+}
+.button:active:before {
+  background: -webkit-gradient(linear, 0% 40%, 0% 70%, from(#E3E3E3), to(#F9F9F9));
+}
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src='../remix.js'></script>
+<!--<script type="text/javascript" src='../jremix.js'></script>-->
+<script type="text/javascript">
+
+// Remix two tracks at once.
+// You will need to supply your Echo Nest API key, the trackID, and a URL to the track.
+// The supplied track can be found in the audio subdirectory.
+var apiKey = '5WTPLU9H80XNQLTR8';
+var trackID = 'TRCYWPQ139279B3308';
+var trackURL = 'audio/1451_-_D.mp3'
+var trackID2 = 'TRBIBEW13936EB37C9';
+var trackURL2 = 'audio/1451_-_E.mp3'
+
+var remixer;
+var remixer2;
+var player;
+var player2;
+var track;
+var track2;
+var remixed;
+var remixed2;
+
+function init() {
+    if (window.webkitAudioContext === undefined) {
+        error("Sorry, this app needs advanced web audio. Your browser doesn't"
+            + " support it. Try the latest version of Chrome");
+    } else {
+        var context = new webkitAudioContext();
+
+        remixer = createJRemixer(context, $, apiKey);
+        player = remixer.getPlayer();
+        $("#info").text("Loading analysis data...");
+
+        remixer.remixTrackById(trackID, trackURL, function(t, percent) {
+            track = t;
+            $("#info").text(percent + "% of the first track loaded...");
+            if (percent == 100) {
+                $("#info").text(percent + "% of the first track loaded, checking status and preparing remixed version of 1st track...");
+            }
+
+            if (track.status == 'ok') {
+                remixer.remixTrackById(trackID2, trackURL2, function(t, percent) {
+                    track2 = t;
+                    $("#info").text(percent + "% of the second track loaded...");
+                    if (percent == 100) {
+                        $("#info").text(percent + "% of both tracks loaded, remixing...");
+                    }
+                    if (track2.status == 'ok') {
+                        // Extract the first and third beats of track 1 with the second and fourth beats of track 2.
+                        remixed = new Array();
+                         for (var i=0; i < track.analysis.tatums.length; i++) {
+                                var ratio = .4;
+                                var dur = track.analysis.tatums[i].duration;
+                                track.analysis.tatums[i].duration = dur*ratio;
+                                remixed.push(track.analysis.tatums[i]);
+                         }
+                        $("#info").text("Remix complete!");
+                    }
+                });
+            }
+        });
+// PLAYER 2
+        remixer2 = createJRemixer(context, $, apiKey);
+        player2 = remixer2.getPlayer();
+        $("#info2").text("Loading analysis data...");
+
+        remixer2.remixTrackById(trackID2, trackURL2, function(t2, percent) {
+            track2 = t2;
+            $("#info2").text(percent + "% of the second track loaded...");
+            if (percent == 100) {
+                $("#info2").text(percent + "% of the second track loaded, checking status and preparing remixed version of 2nd track...");
+            }
+
+            if (track2.status == 'ok') {
+                remixer2.remixTrackById(trackID2, trackURL2, function(t2, percent) {
+                    track2 = t2;
+                    $("#info2").text(percent + "% of the second track loaded...");
+                    if (percent == 100) {
+                        $("#info2").text(percent + "% of both tracks loaded, remixing...");
+                    }
+
+                    if (track2.status == 'ok') {
+                        // Extract the first and third beats of track 1 with the second and fourth beats of track 2.
+                        remixed2 = new Array();
+                         for (var i=0; i < track2.analysis.tatums.length; i++) {
+                                var ratio = .4;
+                                var dur = track2.analysis.tatums[i].duration;
+                                track2.analysis.tatums[i].duration = dur*ratio;
+                                remixed2.push(track2.analysis.tatums[i]);
+                         }
+                        $("#info2").text("Remix complete!");
+                    }
+                });
+            }
+        });
+    } 
+}
+
+// control speed
+            function setSpeedFactor(factor) {
+                player.setSpeedFactor(factor);
+                $("#speed").text(Math.round(factor * 100));
+            }
+            function keydown(evt) {
+                if (evt.which == 190 ) { // , slower
+                    var factor = player.getSpeedFactor() + .01;
+                    setSpeedFactor(factor);
+                    evt.preventDefault();
+                }
+                if (evt.which == 188 ) { // . faster
+                    var factor = player.getSpeedFactor() - .01;
+                    if (factor < 0) {
+                        factor = 0;
+                    }
+                    setSpeedFactor(factor)
+                    evt.preventDefault();
+                }
+                if (evt.which == 191 ) { // / reset
+                    setSpeedFactor(1);
+                    evt.preventDefault();
+                }
+            }
+
+window.onload = init;
+</script>
+<h2>Welcome to Beatmasher</h2><br>
+<p>First CDJ</p>
+<div id='info'> </div>
+<button onClick="player.play(0, track.analysis.beats);">Play first song!</button>
+<button onClick="player.play(0, remixed);">Play first song modified!</button>
+<button onClick="player.stop()">Stop first player!</button>
+<button onClick="player.setSpeedFactor(.4); ">Play faster!</button>
+<p>Second CDJ</p>
+<!--<div id="info2"> </div>
+<button onClick="player2.play(0, track2.analysis.beats);">Play second song!</button>
+<button onClick="player2.play(0, remixed2);">Play second song modified!</button>
+<button onClick="player2.stop()">Stop second player!</button> -->
+ <input type="file" accept="audio/*" class="button">
+  <button onclick="playSound()" disabled>Start</button>
+  <button onclick="stopSound()" disabled>Stop</button>
+<script>
+if (!window.webkitAudioContext) {
+  alert('The Web Audio API is not supported in your browser!');
+}
+var context = new window.webkitAudioContext();
+var source = null;
+var audioBuffer = null;
+ 
+function stopSound() {
+  if (source) {
+    source.noteOff(0);
+  }
+}
+
+function playSound() {
+  source = context.createBufferSource(); // Global so we can .noteOff() later.
+  source.buffer = audioBuffer;
+  source.loop = false;
+  source.connect(context.destination);
+  source.noteOn(0);    
+}
+
+function initSound(arrayBuffer) {
+  context.decodeAudioData(arrayBuffer, function(buffer) {
+    audioBuffer = buffer;
+    var buttons = document.querySelectorAll('button');
+    buttons[0].disabled = false;
+    buttons[1].disabled = false;
+  }, function(e) {
+    console.log('Error decoding', e);
+  }); 
+}
+
+document.querySelector('input[type="file"]').addEventListener('change', function(e) {  
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    initSound(e.target.result);
+  };
+  reader.readAsArrayBuffer(e.target.files[0]);
+}, false);
+  
+// Example loading via xhr2: loadSoundFile('sounds/A220_A880.wav');
+function loadSoundFile(url) {
+  var request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.responseType = 'arraybuffer';
+  request.onload = function(e) {
+    initSound(e.target.response);
+  };
+  request.send();
+}
+</script>
+  <!--[if IE]>
+<script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+<script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
