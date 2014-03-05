@@ -7,13 +7,27 @@
   var source2;
   var gainNode = context.createGain();
   var gainNode2 = context.createGain();
+  var lpfNode = context.createBiquadFilter();
+    lpfNode.type = 0;
+    lpfNode.frequency.value = 8000;
+  var hpfNode = context.createBiquadFilter();
+    hpfNode.type = 1;
+    hpfNode.frequency.value = 0;
+  var lpfNode2 = context.createBiquadFilter();
+    lpfNode2.type = 0;
+    lpfNode2.frequency.value = 8000;
+  var hpfNode2 = context.createBiquadFilter();
+    hpfNode2.type = 1;
+    hpfNode2.frequency.value = 0;
     
     function setAudioFile(buffer) {
         source = context.createBufferSource();
         source.buffer = buffer;
         source.loop= true;
         source.connect(gainNode);
-        gainNode.connect(context.destination);
+        gainNode.connect(lpfNode);
+        lpfNode.connect(hpfNode);
+        hpfNode.connect(context.destination);
         //source.start(0); // Play sound immediately
     };
 
@@ -22,15 +36,17 @@
     }
 
     function play() {
-       source.noteOn(0); 
+       source.start(0); 
     }
 
     function setAudioFile2(buffer) {
-        gainNode2 = context.createGain(); 
         source2 = context.createBufferSource();
         source2.buffer = buffer;
+        source2.loop = true;
         source2.connect(gainNode2);
-        gainNode2.connect(context.destination);
+        gainNode2.connect(lpfNode2);
+        lpfNode2.connect(hpfNode2);
+        hpfNode2.connect(context.destination);
         //source.start(0); // Play sound immediately
     };
 
@@ -100,6 +116,39 @@
     });
   });
 
+  // right lpf slider
+  $(function() {
+    $( "#lpfsliderright" ).slider({
+      orientation: "vertical",
+      range: "min",
+      min: 0,
+      max: 100,
+      value: 0,
+      slide: function(e, ui) {
+        var slider_val = ui.value;
+        freq = 8000 - slider_val*80;
+        lpfNode2.frequency.value = freq;
+      },
+    });
+  });
+
+  // right hpf slider
+  $(function() {
+    $( "#hpfsliderright" ).slider({
+      orientation: "vertical",
+      range: "min",
+      min: 0,
+      max: 100,
+      value: 0,
+      slide: function(e, ui) {
+        var slider_val = ui.value;
+        freq = slider_val*130;
+        console.log(freq)
+        hpfNode2.frequency.value = freq;
+      },
+    });
+  });
+
   // leftmost slider
     $(function() {
     $( "#slider-vertical2" ).slider({
@@ -127,6 +176,38 @@
       },
       })
     });
+
+  // left lpf slider
+  $(function() {
+    $( "#lpfsliderleft" ).slider({
+      orientation: "vertical",
+      range: "min",
+      min: 0,
+      max: 100,
+      value: 0,
+      slide: function(e, ui) {
+        var slider_val = ui.value;
+        freq = 8000 - slider_val*80;
+        lpfNode.frequency.value = freq;
+      },
+    });
+  });
+
+  // left hpf slider
+  $(function() {
+    $( "#hpfsliderleft" ).slider({
+      orientation: "vertical",
+      range: "min",
+      min: 0,
+      max: 100,
+      value: 0,
+      slide: function(e, ui) {
+        var slider_val = ui.value;
+        freq = slider_val*130;
+        hpfNode.frequency.value = freq;
+      },
+    });
+  });
 
   // below is code for spinning jog wheels
 
@@ -164,14 +245,6 @@ $("#play1button").click(function () {
            lto = setTimeout(function() { rotate(10+degree); },65);
            }
        }
-       // function changeVolume(degree) {
-
-       //     var slider_val = $( "#gainsliderleft" ).slider( "value" );
-       //     console.log(slider_val);
-           
-       //     volume = slider_val / 100; //normalized value between 0 and 1
-       //     gainNode.gain.value = volume;  
-       // }
     
 });
 
@@ -190,7 +263,6 @@ $("#play1button").click(function () {
            
            incspeed = -(1 - speed/50.0); //normalized value between -1 and 1
            source2.playbackRate.value    =  incspeed+1;   
-           console.log("hi");
            // For webkit browsers: e.g. Chrome
            $elie.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});
            // For Mozilla browser: e.g. Firefox
@@ -201,34 +273,21 @@ $("#play1button").click(function () {
            rto = setTimeout(function() { rotate(10 + 8*incspeed+degree); },66);
            }
        }
-       // function changeVolume(degree) {
-
-       //     var slider_val = $( "#gainsliderright" ).slider( "value" );
-       //     console.log(speed);
-           
-       //     volume = slider_val / 100; //normalized value between 0 and 1
-       //     gainNode.gain.value = 0;  
-       // }
     
 });
 
   $('#play1buttonstop').click(function() {
     clearTimeout(lto);
+    $("leftwheel").stop(true);
     lstop = true;
     $('#play1button').show();
     $('#play1buttonstop').hide();
   });
 
   $('#play2buttonstop').click(function() {
-    // stop rightwheel
     $("#rightwheel").stop(true);
     rstop = true;
     $('#play2button').show();
     $('#play2buttonstop').hide();
   });
 });
-
-CrossfadeSample.toggle = function() {
-  this.playing ? this.stop() : this.play();
-  this.playing = !this.playing;
-};

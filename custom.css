@@ -45,9 +45,29 @@ h1 {
   left: 475px;
 }
 
+#lpfsliderleft {
+  top: -80px;
+  left: 130px;
+}
+
+#hpfsliderleft {
+  top: -80px;
+  left: 220px;
+}
+
 #gainsliderright {
   top: 458px;
   left: 633px;
+}
+
+#lpfsliderright {
+  top: -80px;
+  left: 720px;
+}
+
+#hpfsliderright {
+  top: -80px;
+  left: 810px;
 }
 
   #leftwheel {
